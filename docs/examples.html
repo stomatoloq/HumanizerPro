@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>13-Language Examples — Stylometric De-AI & Anti-Provenance Rewriter</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --bg-code: #0b1120;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-soft: rgba(16, 185, 129, 0.12);
+      --danger-soft: rgba(239, 68, 68, 0.12);
+      --danger-border: rgba(239, 68, 68, 0.35);
+      --success-soft: rgba(16, 185, 129, 0.12);
+      --success-border: rgba(16, 185, 129, 0.35);
+      --border: #334155;
+      --info: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Noto Sans", "Noto Sans Arabic", "Noto Sans CJK SC", "Noto Sans JP", "Noto Sans Devanagari", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.65;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .back-link:hover {
+      border-color: var(--accent);
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: var(--accent);
+      color: #06281e;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2.15rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 860px;
+    }
+
+    /* Quick Language Jump Bar */
+    .lang-jump-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .lang-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background-color: var(--bg-code);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      transition: border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+
+    .lang-pill:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    /* Flag SVG Styling */
+    .flag-icon {
+      width: 22px;
+      height: 16px;
+      border-radius: 3px;
+      object-fit: cover;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+      flex-shrink: 0;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .flag-icon-lg {
+      width: 30px;
+      height: 22px;
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22);
+      flex-shrink: 0;
+    }
+
+    /* Example Cards */
+    .examples-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .lang-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    }
+
+    .lang-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lang-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .lang-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .lang-native {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .badge-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .type-badge {
+      background-color: rgba(56, 189, 248, 0.12);
+      color: var(--info);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .sig-badge {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 0.76rem;
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 1.15rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .box {
+      padding: 1.15rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.96rem;
+    }
+
+    .box-before {
+      background-color: var(--danger-soft);
+      border: 1px solid var(--danger-border);
+    }
+
+    .box-after {
+      background-color: var(--success-soft);
+      border: 1px solid var(--success-border);
+    }
+
+    .box-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .box-before .box-label {
+      color: #f87171;
+    }
+
+    .box-after .box-label {
+      color: var(--accent);
+    }
+
+    .rtl-text {
+      direction: rtl;
+      text-align: right;
+      font-size: 1.04rem;
+      line-height: 1.8;
+    }
+
+    .audit-strip {
+      background-color: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+
+    .audit-strip strong {
+      color: var(--info);
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      background-color: rgba(255, 255, 255, 0.06);
+      color: #38bdf8;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.86em;
+    }
+
+    .footer-nav {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Navigation -->
+    <header class="top-nav">
+      <div class="nav-links">
+        <a href="readme.html" class="back-link">← Main Documentation</a>
+        <a href="rules.html" class="back-link">6 Core Rules</a>
+      </div>
+      <span class="sig-badge">13 Languages &bull; Universal Showcase</span>
+    </header>
+
+    <div class="page-header">
+      <h1>Multilingual Before &amp; After Showcase</h1>
+      <p>
+        Real-world transformations demonstrating how <code>stylometric-de-ai-rewriter</code> strips Layer A provenance markers and adapts its 6-pass stylometric protocol across 13 analytic, agglutinative, fusional, isolating, and right-to-left (RTL) languages.
+      </p>
+    </div>
+
+    <!-- Language Jump Bar with SVG Flags -->
+    <nav class="lang-jump-bar" aria-label="Language Selector">
+      <a href="#lang-en" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+        English
+      </a>
+      <a href="#lang-az" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 30"><rect width="60" height="10" fill="#00B5E2"/><rect y="10" width="60" height="10" fill="#EF3340"/><rect y="20" width="60" height="10" fill="#509E2F"/><circle cx="28.5" cy="15" r="4.2" fill="#fff"/><circle cx="29.5" cy="15" r="3.4" fill="#EF3340"/><circle cx="33.2" cy="15" r="1.4" fill="#fff"/></svg>
+        Azerbaijani
+      </a>
+      <a href="#lang-tr" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="40" fill="#E30A17"/><circle cx="23" cy="20" r="10" fill="#fff"/><circle cx="25.5" cy="20" r="8" fill="#E30A17"/><polygon points="34,20 40,22 36.5,17 36.5,23 40,18" fill="#fff"/></svg>
+        Turkish
+      </a>
+      <a href="#lang-zh" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="40" fill="#EE1C25"/><polygon points="12,6 14,14 22,14 15.5,18.5 18,26 12,21.5 6,26 8.5,18.5 2,14 10,14" fill="#FFFF00"/><circle cx="26" cy="6" r="1.5" fill="#FFFF00"/><circle cx="30" cy="11" r="1.5" fill="#FFFF00"/><circle cx="30" cy="17" r="1.5" fill="#FFFF00"/><circle cx="26" cy="22" r="1.5" fill="#FFFF00"/></svg>
+        Mandarin Chinese
+      </a>
+      <a href="#lang-hi" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="13.3" fill="#FF9933"/><rect y="13.3" width="60" height="13.3" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#138808"/><circle cx="30" cy="20" r="5" fill="none" stroke="#000080" stroke-width="1.5"/><circle cx="30" cy="20" r="1.5" fill="#000080"/></svg>
+        Hindi
+      </a>
+      <a href="#lang-es" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="40" fill="#AA151B"/><rect y="10" width="60" height="20" fill="#F1BF00"/></svg>
+        Spanish
+      </a>
+      <a href="#lang-de" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 36"><rect width="60" height="12" fill="#000"/><rect y="12" width="60" height="12" fill="#D00"/><rect y="24" width="60" height="12" fill="#FFCE00"/></svg>
+        German
+      </a>
+      <a href="#lang-ar" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="40" fill="#006C35"/><rect x="14" y="14" width="32" height="5" rx="2" fill="#fff"/><rect x="18" y="25" width="24" height="2.5" rx="1" fill="#fff"/></svg>
+        Arabic (MSA)
+      </a>
+      <a href="#lang-pt" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="24" height="40" fill="#006600"/><rect x="24" width="36" height="40" fill="#FF0000"/><circle cx="24" cy="20" r="7" fill="#FFCC00"/></svg>
+        Portuguese
+      </a>
+      <a href="#lang-ru" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 36"><rect width="60" height="12" fill="#fff"/><rect y="12" width="60" height="12" fill="#0039A6"/><rect y="24" width="60" height="12" fill="#D52B1E"/></svg>
+        Russian
+      </a>
+      <a href="#lang-ja" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="40" fill="#fff"/><circle cx="30" cy="20" r="11" fill="#BC002D"/></svg>
+        Japanese
+      </a>
+      <a href="#lang-fr" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="20" height="40" fill="#002395"/><rect x="20" width="20" height="40" fill="#fff"/><rect x="40" width="20" height="40" fill="#ED2939"/></svg>
+        French
+      </a>
+      <a href="#lang-id" class="lang-pill">
+        <svg class="flag-icon" viewBox="0 0 60 40"><rect width="60" height="20" fill="#FF0000"/><rect y="20" width="60" height="20" fill="#fff"/></svg>
+        Indonesian
+      </a>
+    </nav>
+
+    <div class="examples-list">
+      <!-- 1. ENGLISH -->
+      <article id="lang-en" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#C8102E" stroke-width="2"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+            <div>
+              <span class="lang-title">1. English</span>
+              <span class="lang-native">(Analytic SVO)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.50</span>
+            <span class="sig-badge">#10, #11, #13, #20, #25, #27, Layer A</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            In today's rapidly evolving manufacturing landscape, closed-loop thermal compensation serves as a pivotal cornerstone for 5-axis machining centers. It is not merely about reducing spindle growth, but rather about redefining micron-level repeatability, tool longevity, and surface finish:contentReference[oaicite:0]{index=0}. Furthermore, while sensor calibration presents challenges, optical encoder feedback may reduce axial thermal drift by 12% to 18% under intermittent load—ultimately highlighting the enduring importance of adaptive control.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Closed-loop thermal compensation keeps 5-axis machining centers accurate during long production runs. Optical encoder feedback may cut axial thermal drift by 12% to 18% under intermittent load, which protects tool life and surface finish when shop temperatures swing; however, the sensors still require careful initial calibration. Thermal drift ruins tolerances fast.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Stripped <code>:contentReference[oaicite:0]</code> tag (Layer A); cut panoramic opener (<code>#25</code>), <em>"serves as a pivotal cornerstone"</em> (<code>#13, #16</code>), <em>"not merely... but rather"</em> strawman (<code>#20</code>), and em-dash participial tail (<code>#10, #33</code>). Preserved empirical hedge (<em>"may cut... by 12% to 18%"</em>, <code>#27</code>) and injected a 5-word closing punch (<code>#7</code>).
+        </div>
+      </article>
+
+      <!-- 2. AZERBAIJANI -->
+      <article id="lang-az" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 30"><rect width="60" height="10" fill="#00B5E2"/><rect y="10" width="60" height="10" fill="#EF3340"/><rect y="20" width="60" height="10" fill="#509E2F"/><circle cx="28.5" cy="15" r="4.2" fill="#fff"/><circle cx="29.5" cy="15" r="3.4" fill="#EF3340"/><circle cx="33.2" cy="15" r="1.4" fill="#fff"/></svg>
+            <div>
+              <span class="lang-title">2. Azerbaijani</span>
+              <span class="lang-native">(Azərbaycan dili — Agglutinative SOV)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.45</span>
+            <span class="sig-badge">#10, #13, #16, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            Müasir dövrdə sürətlə inkişaf edən rəqəmsal stomatologiya sahəsində intraoral skanerlər mühüm təməl daşı rolunu oynayır. Bu texnologiya sadəcə ölçü dəqiqliyini artırmır, həm də pasiyent komfortunu, laboratoriya ilə əlaqəni və klinik vaxtı yenidən müəyyənləşdirir. Bundan əlavə, optik kameralar diş səthini saniyələr içində oxuyaraq və 3D modeli formalaşdıraraq ənənəvi silikon ölçülərin yaratdığı narahatlığı aradan qaldırır.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Ənənəvi silikon ölçülər ürəkbulanma yaradır. İntraoral skanerlər isə həm pasiyent komfortunu yüksəldir, həm də kənar dəqiqliyini artırır: optik kamera diş səthini saniyələr içində oxuyur, hazır 3D modeli formalaşdırır və birbaşa laboratoriyaya ötürür. Kresloda keçən vaxt xeyli qısalır.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Cut <em>"Müasir dövrdə..."</em> opener (<code>#25</code>), calqued <em>"təməl daşı rolunu oynayır"</em> copula (<code>#13, #16</code>), <em>"sadəcə... deyil, həm də"</em> binary framing (<code>#20</code>), and <em>"Bundan əlavə"</em> (<code>#23</code>). Replaced stacked <code>-araq/-ərək</code> converbs (<code>#10</code>) with native finite verbs and colon linkage; sentence lengths varied (`4`, `29`, `5` words).
+        </div>
+      </article>
+
+      <!-- 3. TURKISH -->
+      <article id="lang-tr" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="40" fill="#E30A17"/><circle cx="23" cy="20" r="10" fill="#fff"/><circle cx="25.5" cy="20" r="8" fill="#E30A17"/><polygon points="34,20 40,22 36.5,17 36.5,23 40,18" fill="#fff"/></svg>
+            <div>
+              <span class="lang-title">3. Turkish</span>
+              <span class="lang-native">(Türkçe — Agglutinative SOV)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.45</span>
+            <span class="sig-badge">#10, #11, #13, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            Günümüzün hızla gelişen yazılım mimarisi dünyasında mikroservisler kritik bir yapı taşı olarak karşımıza çıkmaktadır. Bu yaklaşım sadece ölçeklenebilirliği artırmakla kalmaz, aynı zamanda dağıtım hızını, hata izolasyonunu ve ekip özerkliğini yeniden tanımlar. Buna ek olarak, konteyner teknolojileri bağımlılıkları izole ederek ve kaynak kullanımını optimize ederek kesintisiz bir entegrasyon süreci sağlamaktadır.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Monolitik sistemlerde tek bir modül hatası tüm sunucuyu kilitleyebilir. Mikroservis mimarisi ise servisleri birbirinden ayırır: konteynerler bağımlılıkları izole eder, kaynak tüketimini dengeler ve ekiplerin birbirini beklemeden dağıtım yapmasına imkân tanır. Ölçekleme maliyeti düşer.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Removed <em>"Günümüzün hızla gelişen..."</em> (<code>#25</code>), inflated <em>"yapı taşı olarak karşımıza çıkmaktadır"</em> (<code>#13</code>), <em>"sadece... kalmaz, aynı zamanda"</em> (<code>#20</code>), and <em>"Buna ek olarak"</em> (<code>#23</code>). Converted stacked <code>-erek</code> converbs (<code>#10</code>) into finite predicates and ended with a 3-word sentence (`3` vs. `25` words).
+        </div>
+      </article>
+
+      <!-- 4. MANDARIN CHINESE -->
+      <article id="lang-zh" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="40" fill="#EE1C25"/><polygon points="12,6 14,14 22,14 15.5,18.5 18,26 12,21.5 6,26 8.5,18.5 2,14 10,14" fill="#FFFF00"/><circle cx="26" cy="6" r="1.5" fill="#FFFF00"/><circle cx="30" cy="11" r="1.5" fill="#FFFF00"/><circle cx="30" cy="17" r="1.5" fill="#FFFF00"/><circle cx="26" cy="22" r="1.5" fill="#FFFF00"/></svg>
+            <div>
+              <span class="lang-title">4. Mandarin Chinese</span>
+              <span class="lang-native">(简体中文 — Isolating / Logographic)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Char CV &gt;= 0.45</span>
+            <span class="sig-badge">#10, #13, #16, #20, #22, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            在当今瞬息万变的新能源格局中，固态电池技术扮演着至关重要的基石角色。它不仅是为了提升能量密度，更是为了重新定义出行安全、充电效率与循环寿命。此外，通过采用固态电解质材料——该技术有效消除了热失控风险，从而为绿色交通的可持续未来铺平了道路。
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            传统液态锂电池存在漏液与起火隐患。固态电池直接用固态电解质替代隔膜与电解液：不仅抑制了锂枝晶穿刺、消除了热失控风险，还大幅推高了体积能量密度与快充上限。续航焦虑由此缓解。
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Cut <em>"在当今瞬息万变的..."</em> opener (<code>#25</code>), calqued <em>"扮演着至关重要的基石角色"</em> (<code>#13, #16</code>), <em>"不仅是为了...更是为了重新定义"</em> strawman (<code>#20</code>), em-dash splice (<code>#33</code>), and moralizing coda <em>"为...铺平了道路"</em> (<code>#22</code>). Varied clause character counts (`17`, `54`, `9` chars).
+        </div>
+      </article>
+
+      <!-- 5. HINDI -->
+      <article id="lang-hi" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="13.3" fill="#FF9933"/><rect y="13.3" width="60" height="13.3" fill="#fff"/><rect y="26.6" width="60" height="13.4" fill="#138808"/><circle cx="30" cy="20" r="5" fill="none" stroke="#000080" stroke-width="1.5"/><circle cx="30" cy="20" r="1.5" fill="#000080"/></svg>
+            <div>
+              <span class="lang-title">5. Hindi</span>
+              <span class="lang-native">(हिन्दी — Indo-Aryan SOV / Devanagari)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Devanagari ZWNJ Safe</span>
+            <span class="sig-badge">#11, #13, #20, #22, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            आज के तेज़ी से बदलते कृषि परिदृश्य में, ड्रिप सिंचाई प्रणाली एक महत्वपूर्ण मील का पत्थर साबित हो रही है। यह न केवल पानी की बचत करने के बारे में है, बल्कि फसल की पैदावार, मिट्टी के स्वास्थ्य और किसानों की समृद्धि को नया आयाम देने के बारे में भी है। इसके अतिरिक्त, यह तकनीक जड़ों तक सीधा पोषण पहुँचाकर एक उज्ज्वल भविष्य का मार्ग प्रशस्त करती है।
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            खुली सिंचाई में आधे से अधिक पानी भाप बनकर उड़ जाता है। ड्रिप सिंचाई सीधे पौधों की जड़ों तक बूंद-बूंद पानी और खाद पहुँचाती है: इससे खरपतवार नहीं पनपते, मिट्टी का कटाव रुकता है और कम पानी में भी पैदावार बढ़ती है। लागत तुरंत घटती है।
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Preserved valid Devanagari orthographic codepoints (Layer A); stripped <em>"आज के तेज़ी से बदलते..."</em> (<code>#25</code>), calqued <em>"मील का पत्थर साबित हो रही है"</em> (<code>#13, #16</code>), <em>"न केवल... बल्कि"</em> (<code>#20</code>), and <em>"उज्ज्वल भविष्य का मार्ग प्रशस्त करती है"</em> coda (<code>#22</code>).
+        </div>
+      </article>
+
+      <!-- 6. SPANISH -->
+      <article id="lang-es" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="40" fill="#AA151B"/><rect y="10" width="60" height="20" fill="#F1BF00"/></svg>
+            <div>
+              <span class="lang-title">6. Spanish</span>
+              <span class="lang-native">(Español — Romance Analytic-Inflected)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.50</span>
+            <span class="sig-badge">#10, #13, #16, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            En el panorama energético actual en rápida evolución, las microrredes solares sirven como una piedra angular fundamental para las comunidades rurales. No se trata simplemente de generar electricidad limpia, sino de redefinir la autonomía local, la resiliencia económica y el bienestar social. Además, las baterías de litio almacenan el excedente diurno, garantizando un suministro ininterrumpido durante toda la noche.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Las redes eléctricas nacionales rara vez llegan a las aldeas de montaña sin pérdidas de tensión. Allí, las microrredes solares con baterías de litio almacenan el excedente del mediodía y mantienen el suministro estable toda la noche sin depender del diésel. La comunidad controla su propia tarifa.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Removed <em>"En el panorama... en rápida evolución"</em> (<code>#25</code>), <em>"sirven como una piedra angular"</em> (<code>#13, #16</code>), <em>"No se trata simplemente de... sino de"</em> (<code>#20</code>), and the ungrammatical Spanish calque <em>", garantizando..."</em> (<em>gerundio de posterioridad</em>, <code>#10</code>).
+        </div>
+      </article>
+
+      <!-- 7. GERMAN -->
+      <article id="lang-de" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 36"><rect width="60" height="12" fill="#000"/><rect y="12" width="60" height="12" fill="#D00"/><rect y="24" width="60" height="12" fill="#FFCE00"/></svg>
+            <div>
+              <span class="lang-title">7. German</span>
+              <span class="lang-native">(Deutsch — Fusional V2 / Compound Nouns)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.45</span>
+            <span class="sig-badge">#13, #15, #16, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            In der heutigen sich rasant entwickelnden Industrielandschaft dient die vorausschauende Wartung als entscheidender Eckpfeiler für moderne Produktionsanlagen. Es geht nicht nur darum, ungeplante Ausfallzeiten zu minimieren, sondern vielmehr darum, die Anlageneffektivität, die Arbeitssicherheit und die Kostenkontrolle neu zu definieren. Darüber hinaus ermöglicht die Implementierung von Vibrationssensoren die frühzeitige Erkennung von Lagerschäden.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Fällt ein Hauptspindellager mitten in der Schicht aus, steht die gesamte Fertigungslinie still. Vibrationssensoren melden feinste Unwuchten bereits Wochen vor dem Bruch, sodass Techniker das Bauteil gezielt im geplanten Wartungsfenster tauschen können. Das spart teure Notfalleinsätze.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Eliminated <em>"In der heutigen sich rasant entwickelnden..."</em> (<code>#25</code>), <em>"dient als entscheidender Eckpfeiler"</em> (<code>#13, #16</code>), <em>"nicht nur... sondern vielmehr"</em> (<code>#20</code>), and heavy German <em>Nominalstil</em> (<em>"ermöglicht die Implementierung... die Erkennung"</em>, <code>#15</code>) in favor of V2 conditional inversion and active verbs.
+        </div>
+      </article>
+
+      <!-- 8. MODERN STANDARD ARABIC -->
+      <article id="lang-ar" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="40" fill="#006C35"/><rect x="14" y="14" width="32" height="5" rx="2" fill="#fff"/><rect x="18" y="25" width="24" height="2.5" rx="1" fill="#fff"/></svg>
+            <div>
+              <span class="lang-title">8. Modern Standard Arabic</span>
+              <span class="lang-native">(العربية الفصحى — Semitic Root-Pattern / RTL)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">RTL &amp; Arabic Joiner Safe</span>
+            <span class="sig-badge">#10, #13, #16, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before rtl-text" lang="ar">
+            <span class="box-label" style="direction: ltr; text-align: left;">Before (Raw AI Draft)</span>
+            في ظل التطورات المتسارعة التي يشهدها المشهد الطبي الحديث، تلعب الجراحة الروبوتية دوراً محورياً كحجر زاوية في العمليات الدقيقة. ولا يقتصر الأمر على تقليل التدخل الجراحي فحسب، بل يتعداه إلى إعادة تعريف دقة الاستئصال وسرعة التعافي وسلامة المرضى. علاوة على ذلك، توفر الأذرع الآلية ثباتاً فائقاً، مما يضمن تقليل فقدان الدم بشكل ملحوظ.
+          </div>
+          <div class="box box-after rtl-text" lang="ar">
+            <span class="box-label" style="direction: ltr; text-align: left;">After (Sanitized &amp; Humanized)</span>
+            ترتعش يد الجراح البشري مهما بلغت خبرته عند العمل في تجاويف ضيقة لساعات طويلة. أما الأذرع الروبوتية فتُلغي هذا الارتعاش تماماً وتتيح استئصال الأورام عبر شقوق صغيرة لا تتجاوز بضعة مليمترات؛ وبذلك ينخفض النزيف ويغادر المريض المستشفى خلال يومين. الدقة هنا تحسم النتيجة.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Stripped calqued English-to-Arabic AI tropes: <em>"في ظل التطورات المتسارعة..."</em> (<code>#25</code>), <em>"تلعب دوراً محورياً كحجر زاوية"</em> ("plays a pivotal role as a cornerstone", <code>#13, #16</code>), <em>"لا يقتصر على... فحسب، بل"</em> (<code>#20</code>), <em>"علاوة على ذلك"</em> (<code>#23</code>), and <em>"مما يضمن"</em> ("ensuring", <code>#10</code>). Restored authentic Arabic verbal sentence (جملة فعلية) flow.
+        </div>
+      </article>
+
+      <!-- 9. PORTUGUESE -->
+      <article id="lang-pt" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="24" height="40" fill="#006600"/><rect x="24" width="36" height="40" fill="#FF0000"/><circle cx="24" cy="20" r="7" fill="#FFCC00"/></svg>
+            <div>
+              <span class="lang-title">9. Portuguese</span>
+              <span class="lang-native">(Português — Romance Analytic-Inflected)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.50</span>
+            <span class="sig-badge">#10, #11, #13, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            No cenário logístico em rápida evolução de hoje, a rastreabilidade por RFID atua como um pilar fundamental para a gestão de armazéns. Não se trata apenas de contar mercadorias, mas sim de redefinir a visibilidade do estoque, a velocidade de expedição e a prevenção de perdas. Além disso, os leitores ópticos e antenas capturam centenas de etiquetas simultaneamente—garantindo uma operação fluida e sem gargalos.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Conferir paletes com leitores de código de barras exige linha de visão direta e trava a doca de carga. Com antenas RFID nos portais, o armazém registra centenas de caixas em segundos enquanto a empilhadeira passa em movimento; divergências de inventário aparecem na tela antes mesmo de o caminhão fechar as portas.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Cut <em>"No cenário... em rápida evolução"</em> (<code>#25</code>), <em>"atua como um pilar fundamental"</em> (<code>#13, #16</code>), <em>"Não se trata apenas de... mas sim de"</em> (<code>#20</code>), <em>"Além disso"</em> (<code>#23</code>), and the em-dash gerund tail <em>"—garantindo..."</em> (<code>#10, #33</code>).
+        </div>
+      </article>
+
+      <!-- 10. RUSSIAN -->
+      <article id="lang-ru" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 36"><rect width="60" height="12" fill="#fff"/><rect y="12" width="60" height="12" fill="#0039A6"/><rect y="24" width="60" height="12" fill="#D52B1E"/></svg>
+            <div>
+              <span class="lang-title">10. Russian</span>
+              <span class="lang-native">(Русский — Fusional Slavic)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.45</span>
+            <span class="sig-badge">#10, #11, #13, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            В современном стремительно меняющемся мире цифровой ортодонтии элайнеры играют ключевую роль, выступая краеугольным камнем эстетического лечения. Это не просто незаметная альтернатива брекетам, а комплексный инструмент биомеханического контроля, комфорта пациента и предсказуемости результата. Кроме того, 3D-моделирование позволяет точно рассчитывать векторы силы—обеспечивая плавное перемещение зубов.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Брекеты часто травмируют слизистую и затрудняют чистку зубов. Прозрачные элайнеры снимаются перед едой, а цифровая 3D-модель позволяет ортодонту заранее рассчитать вектор давления на каждый зуб с точностью до десятых долей миллиметра. Сроки лечения становятся предсказуемыми.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Stripped <em>"В современном стремительно меняющемся мире..."</em> (<code>#25</code>), double inflated copula <em>"играют ключевую роль, выступая краеугольным камнем"</em> (<code>#13, #16</code>), <em>"не просто X, а Y"</em> (<code>#20</code>), <em>"Кроме того"</em> (<code>#23</code>), and trailing adverbial participle <em>"—обеспечивая..."</em> (<code>#10, #33</code>).
+        </div>
+      </article>
+
+      <!-- 11. JAPANESE -->
+      <article id="lang-ja" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="40" fill="#fff"/><circle cx="30" cy="20" r="11" fill="#BC002D"/></svg>
+            <div>
+              <span class="lang-title">11. Japanese</span>
+              <span class="lang-native">(日本語 — Agglutinative SOV / Mixed Script)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Char CV &gt;= 0.45</span>
+            <span class="sig-badge">#10, #13, #20, #22, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            急速に進化する現代の医療現場において、AI画像診断支援システムは極めて重要な礎としての役割を果たしています。それは単に見落としを減らすだけでなく、診断の迅速性、医師の負担軽減、そして医療の質の向上を再定義するものです。さらに、深層学習アルゴリズムが微細な病変を検出することで、より明るい医療の未来を切り拓いています。
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            夜間救急では、疲労した医師が何百枚ものCTスライスを単独で読影しなければならない。AI画像診断支援ソフトは数秒で微細な初期病変候補をハイライトし、見落としリスクを抑える。読影時間は大幅に短縮される。
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Cut <em>"急速に進化する現代の..."</em> (<code>#25</code>), calqued <em>"礎としての役割を果たしています"</em> ("serves as a cornerstone", <code>#13, #16</code>), <em>"単にXだけでなく、Yを再定義する"</em> (<code>#20</code>), <em>"さらに"</em> (<code>#23</code>), and moralizing closer <em>"明るい医療の未来を切り拓いています"</em> (<code>#22</code>).
+        </div>
+      </article>
+
+      <!-- 12. FRENCH -->
+      <article id="lang-fr" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="20" height="40" fill="#002395"/><rect x="20" width="20" height="40" fill="#fff"/><rect x="40" width="20" height="40" fill="#ED2939"/></svg>
+            <div>
+              <span class="lang-title">12. French</span>
+              <span class="lang-native">(Français — Romance Analytic-Inflected)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.50</span>
+            <span class="sig-badge">#10, #13, #16, #20, #23, #25, Layer A</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            Dans le paysage urbain actuel en constante évolution, la géothermie de surface s'impose comme une pierre angulaire incontournable pour la transition énergétique. Il ne s'agit pas seulement de chauffer les bâtiments, mais plutôt de repenser l'efficacité thermique, la sobriété carbone et le confort d'été. De plus, les sondes verticales captent la chaleur stable du sous-sol—garantissant ainsi une performance optimale tout au long de l'année.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            À cent mètres sous terre, la température reste stable hiver comme été. Les sondes géothermiques verticales exploitent cette inertie pour chauffer les immeubles en janvier et les rafraîchir en juillet sans unité extérieure bruyante; la consommation électrique chute alors de près des deux tiers par rapport aux chaudières classiques. L'investissement s'amortit sur la durée.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Normalized narrow no-break spaces <code>\u202F</code> (Layer A); stripped <em>"Dans le paysage... en constante évolution"</em> (<code>#25</code>), <em>"s'impose comme une pierre angulaire"</em> (<code>#13, #16</code>), <em>"Il ne s'agit pas seulement de... mais plutôt de"</em> (<code>#20</code>), and trailing <em>"—garantissant ainsi..."</em> (<code>#10, #33</code>).
+        </div>
+      </article>
+
+      <!-- 13. INDONESIAN -->
+      <article id="lang-id" class="lang-card">
+        <div class="lang-header">
+          <div class="lang-title-group">
+            <svg class="flag-icon-lg" viewBox="0 0 60 40"><rect width="60" height="20" fill="#FF0000"/><rect y="20" width="60" height="20" fill="#fff"/></svg>
+            <div>
+              <span class="lang-title">13. Indonesian</span>
+              <span class="lang-native">(Bahasa Indonesia — Austronesian Agglutinative)</span>
+            </div>
+          </div>
+          <div class="badge-group">
+            <span class="type-badge">Target CV &gt;= 0.45</span>
+            <span class="sig-badge">#10, #11, #13, #20, #23, #25</span>
+          </div>
+        </div>
+        <div class="comparison-grid">
+          <div class="box box-before">
+            <span class="box-label">Before (Raw AI Draft)</span>
+            Di lanskap perbankan digital yang berkembang pesat saat ini, verifikasi biometrik berfungsi sebagai landasan penting bagi keamanan transaksi. Ini bukan sekadar tentang menggantikan kata sandi tradisional, melainkan tentang mendefinisikan ulang kecepatan autentikasi, perlindungan privasi, dan kepercayaan nasabah. Selain itu, pemindaian wajah mendeteksi keaktifan pengguna secara instan—memastikan perlindungan menyeluruh terhadap penipuan.
+          </div>
+          <div class="box box-after">
+            <span class="box-label">After (Sanitized &amp; Humanized)</span>
+            Kata sandi dan kode OTP melalui SMS mudah dibajak lewat tautan palsu. Pemindaian biometrik wajah memeriksa gerak mata serta kedalaman tiga dimensi secara langsung di perangkat nasabah, sehingga pencuri akun tidak bisa masuk hanya dengan bermodalkan foto statis. Proses masuk aplikasi selesai dalam satu detik.
+          </div>
+        </div>
+        <div class="audit-strip">
+          <strong>Audit Summary:</strong> Removed <em>"Di lanskap... yang berkembang pesat saat ini"</em> (<code>#25</code>), calqued <em>"berfungsi sebagai landasan penting"</em> (<code>#13, #16</code>), <em>"bukan sekadar... melainkan"</em> (<code>#20</code>), <em>"Selain itu"</em> (<code>#23</code>), and em-dash tail <em>"—memastikan..."</em> (<code>#10, #33</code>).
+        </div>
+      </article>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <footer class="footer-nav">
+      <div class="nav-links">
+        <a href="readme.html" class="back-link">← Main Documentation</a>
+        <a href="rules.html" class="back-link">6 Core Rules</a>
+      </div>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">
+        Stylometric De-AI &amp; Anti-Provenance Rewriter &bull; MIT License
+      </span>
+    </footer>
+  </div>
+</body>
+</html>

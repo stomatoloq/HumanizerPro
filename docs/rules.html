@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The 6 Core Rules — Stylometric De-AI & Anti-Provenance Rewriter</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --bg-code: #0b1120;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-soft: rgba(16, 185, 129, 0.12);
+      --danger-soft: rgba(239, 68, 68, 0.12);
+      --danger-border: rgba(239, 68, 68, 0.35);
+      --success-soft: rgba(16, 185, 129, 0.12);
+      --success-border: rgba(16, 185, 129, 0.35);
+      --border: #334155;
+      --info: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.65;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .back-link:hover {
+      border-color: var(--accent);
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background-color: var(--accent);
+      color: #06281e;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .page-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 2.15rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 840px;
+    }
+
+    .rules-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .rule-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.85rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    }
+
+    .rule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rule-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sig-badge {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 6px;
+    }
+
+    .rule-desc {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .rule-list {
+      padding-left: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.35rem;
+    }
+
+    .rule-list li {
+      margin-bottom: 0.5rem;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .ex-box {
+      padding: 1rem 1.15rem;
+      border-radius: 10px;
+      font-size: 0.93rem;
+    }
+
+    .ex-before {
+      background-color: var(--danger-soft);
+      border: 1px solid var(--danger-border);
+    }
+
+    .ex-after {
+      background-color: var(--success-soft);
+      border: 1px solid var(--success-border);
+    }
+
+    .ex-label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .ex-before .ex-label {
+      color: #f87171;
+    }
+
+    .ex-after .ex-label {
+      color: var(--accent);
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      background-color: var(--bg-code);
+      color: var(--info);
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    .footer-nav {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="top-nav">
+      <div class="nav-links">
+        <a href="readme.html" class="back-link">← Back to Main Documentation</a>
+        <a href="examples.html" class="nav-btn">13-Language Examples →</a>
+      </div>
+      <span class="sig-badge">Layer B &bull; 6-Pass Stylometric Pipeline</span>
+    </header>
+
+    <div class="page-header">
+      <h1>The 6 Core Rules (6-Pass Stylometric Protocol)</h1>
+      <p>
+        Executed sequentially from macro-discourse down to lexical selection, these 6 core passes dismantle alignment-induced scaffolding, statistical smoothing, and repetitive syntactic templates across all languages.
+      </p>
+    </div>
+
+    <div class="rules-grid">
+      <!-- RULE 1 -->
+      <article class="rule-card">
+        <div class="rule-header">
+          <h2 class="rule-title">Rule 1: Macro-Discourse and Epistemic Alignment</h2>
+          <span class="sig-badge">Signatures: #4, #21, #22, #25, #27–#32</span>
+        </div>
+        <p class="rule-desc">
+          Language models minimize initial token uncertainty by opening with sweeping historical truisms and resist stopping on a bare fact due to assistant alignment training. This rule cuts artificial framing and grounds claims in source specifics.
+        </p>
+        <ul class="rule-list">
+          <li><strong>Cut Staged Run-Ups &amp; Panoramic Openers (<code>#25</code>):</strong> Delete broad truisms (<em>"In today's rapidly evolving landscape..."</em>, <em>"Müasir dövrdə sürətlə inkişaf edən..."</em>) and start directly with the specific claim or tension.</li>
+          <li><strong>Cut Moralizing Codas &amp; Sandwich Symmetry (<code>#21, #22</code>):</strong> Remove paragraph-ending lines that merely restate the opening sentence and cut uplifting future-oriented send-offs.</li>
+          <li><strong>Trim Obvious Deductive Bridges (<code>#29</code>) &amp; Calibrate Hedging (<code>#27, #32</code>):</strong> Cut intermediate filler steps that the intended reader already knows; strip performative modal buffers while strictly preserving source-backed empirical uncertainty.</li>
+        </ul>
+        <div class="example-grid">
+          <div class="ex-box ex-before">
+            <span class="ex-label">Before (AI Framing)</span>
+            "In today's rapidly evolving manufacturing landscape, thermal compensation plays a vital role. Ultimately, embracing these innovations paves the way for a more resilient industrial future."
+          </div>
+          <div class="ex-box ex-after">
+            <span class="ex-label">After (Human Prose)</span>
+            "Closed-loop thermal compensation keeps 5-axis machining centers accurate during long production runs."
+          </div>
+        </div>
+      </article>
+
+      <!-- RULE 2 -->
+      <article class="rule-card">
+        <div class="rule-header">
+          <h2 class="rule-title">Rule 2: Typographic and Visual Scaffolding</h2>
+          <span class="sig-badge">Signatures: #33, #34, #35, #36, #37, #38</span>
+        </div>
+        <p class="rule-desc">
+          RLHF preference raters reward scannable visual hierarchy and use the em-dash as a universal clause splice that avoids specifying logical relationships. This rule restores natural paragraph geometry and punctuation diversity.
+        </p>
+        <ul class="rule-list">
+          <li><strong>Dissolve Decorative Bulletization (<code>#36</code>) &amp; Bold-Colon Labels (<code>#34</code>):</strong> Unless the genre requires a list (emails, READMEs, checklists), fold <code>**[Label]:** [Explanation]</code> bullets back into continuous prose.</li>
+          <li><strong>Vary Paragraph Block Weight (<code>#35</code>):</strong> Break uniform 4-sentence rectangular blocks by pairing fuller analytical paragraphs with compact 1–2 sentence pivots.</li>
+          <li><strong>Replace Habitual Clause Dashes (<code>#33</code>) &amp; Remove Scare Quotes (<code>#38</code>):</strong> Replace most dashes with periods, commas, colons, parentheses, or semicolons (<code>#37</code>), and drop apologetic quotation marks around ordinary metaphors.</li>
+        </ul>
+        <div class="example-grid">
+          <div class="ex-box ex-before">
+            <span class="ex-label">Before (AI Scaffolding)</span>
+            "- <strong>Marginal Accuracy:</strong> Optical scanners capture preparation geometry—delivering a "seamless" digital workflow."
+          </div>
+          <div class="ex-box ex-after">
+            <span class="ex-label">After (Human Prose)</span>
+            "Optical scanners capture subgingival preparation geometry in a single pass; the laboratory receives a locked STL mesh without stone-die expansion."
+          </div>
+        </div>
+      </article>
+
+      <!-- RULE 3 -->
+      <article class="rule-card">
+        <div class="rule-header">
+          <h2 class="rule-title">Rule 3: Rhetorical Templates and Transitions</h2>
+          <span class="sig-badge">Signatures: #11, #20, #23, #24, #26</span>
+        </div>
+        <p class="rule-desc">
+          Models simulate analytical depth using corrective binary negation strawmen, mechanical three-item coordinate lists, and heavy sentence-initial conjunctive adverbs.
+        </p>
+        <ul class="rule-list">
+          <li><strong>Collapse Negative Parallelisms (<code>#20</code>):</strong> Cut strawman formulas (<em>"It is not merely X, but Y"</em>, <em>"sadəcə X deyil, həm də Y"</em>, <em>"не просто X, а Y"</em>) and state <code>Y</code> directly.</li>
+          <li><strong>Unbalance the Concession Seesaw (<code>#24</code>) &amp; Prune Forced Triads (<code>#11</code>):</strong> Stop repeating <code>"While X, Y"</code> in every paragraph, and trim padded three-part lists (<code>A, B, and C</code>) to exact single terms or pairs unless three distinct facts exist.</li>
+          <li><strong>Cut Polar Merisms (<code>#26</code>) &amp; Heavy Discourse Glue (<code>#23</code>):</strong> Remove decorative range brackets (<em>"from solo clinics to global hospitals"</em>) and mechanical sentence-initial adverbs (<em>Moreover, Furthermore, Additionally</em>).</li>
+        </ul>
+        <div class="example-grid">
+          <div class="ex-box ex-before">
+            <span class="ex-label">Before (AI Rhetorical Template)</span>
+            "It is not merely about reducing spindle growth, but rather about redefining repeatability, tool longevity, and surface finish. Furthermore, it benefits everyone from small job shops to aerospace plants."
+          </div>
+          <div class="ex-box ex-after">
+            <span class="ex-label">After (Human Prose)</span>
+            "Cutting axial thermal drift protects both tool life and surface finish when shop temperatures swing."
+          </div>
+        </div>
+      </article>
+
+      <!-- RULE 4 -->
+      <article class="rule-card">
+        <div class="rule-header">
+          <h2 class="rule-title">Rule 4: Syntactic Tree Variance and Burstiness</h2>
+          <span class="sig-badge">Signatures: #2, #3, #7, #8, #9, #10, #12</span>
+        </div>
+        <p class="rule-desc">
+          Autoregressive decoding clusters sentence lengths tightly around a flat mean with repetitive right-branching parse trees and trailing non-finite clauses.
+        </p>
+        <ul class="rule-list">
+          <li><strong>Cut Shallow Trailing Participles &amp; Converbs (<code>#10</code>):</strong> Delete comma-spliced interpretive tails (<em>", highlighting the importance of..."</em>, <em>", ensuring..."</em>, or stacked Turkic <code>-araq/-ərək</code> converbs). Turn genuine causal outcomes into finite main verbs.</li>
+          <li><strong>Vary Sentence Length &amp; Parse Trees (<code>#2, #3, #7, #8, #9, #12</code>):</strong> Mix compact, high-impact sentences with longer left-branching or compound sentences, and use natural constituent fronting so adjacent sentences never clone the same grammatical skeleton.</li>
+        </ul>
+        <div class="example-grid">
+          <div class="ex-box ex-before">
+            <span class="ex-label">Before (Flat Syntax &amp; Participial Tail)</span>
+            "The optical camera reads the tooth surface within seconds, generating an accurate 3D model and eliminating the discomfort caused by conventional silicone impressions."
+          </div>
+          <div class="ex-box ex-after">
+            <span class="ex-label">After (High Burstiness &amp; Finite Verbs)</span>
+            "Conventional silicone trays trigger gagging. An intraoral camera reads the tooth surface in seconds, builds the 3D mesh on screen, and sends it straight to the lab."
+          </div>
+        </div>
+      </article>
+
+      <!-- RULE 5 -->
+      <article class="rule-card">
+        <div class="rule-header">
+          <h2 class="rule-title">Rule 5: Lexical Precision and Collocation De-Smoothing</h2>
+          <span class="sig-badge">Signatures: #1, #5, #6, #13–#19</span>
+        </div>
+        <p class="rule-desc">
+          Alignment training penalizes simple copulas as elementary, driving models toward ornate relational verbs, dead structural metaphors, anonymous collective citations, and high-PMI adjective-noun lock-in.
+        </p>
+        <ul class="rule-list">
+          <li><strong>Restore Direct Copulas &amp; Active Verbs (<code>#13, #15</code>):</strong> Replace <em>serves as, stands as, boasts, features, represents, rolunu oynayır, является</em> and heavy nominalizations with direct copulas (<em>is, are, has, -dır/-dir</em>) or concrete finite verbs.</li>
+          <li><strong>Cut Puffery (<code>#14</code>), Dead Metaphors (<code>#16</code>) &amp; Weasel Citations (<code>#19</code>):</strong> Purge stock AI vocabulary (<em>tapestry, delve, landscape, beacon, cornerstone, catalyst, pivotal, crucial, testament, seamless, robust</em>) and unnamed authorities (<em>"experts argue"</em>).</li>
+          <li><strong>Prefer Concrete Hyponyms (<code>#17</code>), Consistent Terms (<code>#18</code>) &amp; Unstuck Collocations (<code>#1, #5, #6</code>):</strong> Replace vague category nouns (<em>"stakeholder dynamics"</em>) with source specifics, stop cycling awkward synonyms (<em>"the aforementioned paradigm"</em>), and drop cliché pairings (<em>"meticulously crafted"</em>).</li>
+        </ul>
+        <div class="example-grid">
+          <div class="ex-box ex-before">
+            <span class="ex-label">Before (AI Lexical Inflation)</span>
+            "Industry experts note that this robust methodology serves as a pivotal cornerstone in navigating the modern clinical landscape."
+          </div>
+          <div class="ex-box ex-after">
+            <span class="ex-label">After (Human Prose)</span>
+            "This protocol stabilizes subgingival margin capture during crown preparation."
+          </div>
+        </div>
+      </article>
+
+      <!-- RULE 6 -->
+      <article class="rule-card">
+        <div class="rule-header">
+          <h2 class="rule-title">Rule 6: Self-Audit Verification Gate</h2>
+          <span class="sig-badge">Pass 6 &bull; Final Quality Gate</span>
+        </div>
+        <p class="rule-desc">
+          Before emitting the final response, the draft is verified against four quantitative and structural criteria:
+        </p>
+        <ul class="rule-list">
+          <li><strong>Sentence Length Range:</strong> On texts of 5+ sentences, confirm the rewrite includes both a compact sentence (<code>&lt;= 7</code> words in analytic languages; <code>&lt;= 5</code> words in agglutinative languages) and a longer multi-clause sentence (<code>&gt;= 32</code> words in analytic; <code>&gt;= 22</code> words in agglutinative).</li>
+          <li><strong>Dash Count:</strong> Confirm clause-level dashes do not exceed <code>1 per 400 words</code> unless matching a user's reference voice sample.</li>
+          <li><strong>Punctuation Variety:</strong> On texts over 150 words, use at least 3 distinct non-terminal punctuation marks (from commas, semicolons, colons, parentheses, or question marks).</li>
+          <li><strong>Zero-Tolerance Structural Tells:</strong> Confirm <code>0</code> unmotivated <em>"Not X, but Y"</em> strawmen, <code>0</code> decorative <code>**[Bold Label]:**</code> prose headers, and <code>0</code> trailing <em>", highlighting/ensuring/fostering"</em> participial riders.</li>
+        </ul>
+        <div class="example-grid">
+          <div class="ex-box ex-before">
+            <span class="ex-label">Pre-Audit Draft</span>
+            Sentence lengths: 20, 22, 24, 21 words (CV = 0.07) &bull; 3 em-dashes &bull; 1 "Not merely X, but Y" &bull; 2 "-ing" riders.
+          </div>
+          <div class="ex-box ex-after">
+            <span class="ex-label">Verified Final Output</span>
+            Sentence lengths: 12, 36, 6, 19 words (CV = 0.56) &bull; 0 em-dashes &bull; Semicolon, colon, and commas used &bull; 0 structural tells.
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <footer class="footer-nav">
+      <div class="nav-links">
+        <a href="readme.html" class="back-link">← Back to Main Documentation</a>
+        <a href="examples.html" class="nav-btn">13-Language Examples →</a>
+      </div>
+      <span style="color: var(--text-muted); font-size: 0.9rem;">
+        Stylometric De-AI &amp; Anti-Provenance Rewriter &bull; MIT License
+      </span>
+    </footer>
+  </div>
+</body>
+</html>
