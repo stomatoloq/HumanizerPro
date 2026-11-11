@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stylometric De-AI & Anti-Provenance Rewriter — Main Documentation</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --bg-code: #0b1120;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-soft: rgba(16, 185, 129, 0.12);
+      --border: #334155;
+      --info: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.65;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .badge {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .nav-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--accent);
+      color: #06281e;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--accent-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-btn-secondary:hover {
+      border-color: var(--accent);
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 840px;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.55rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.6rem;
+      color: var(--info);
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card ul {
+      padding-left: 1.2rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .card li {
+      margin-bottom: 0.45rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--bg-secondary);
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.9rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background-color: var(--bg-code);
+      color: var(--accent);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, Monaco, monospace;
+      background-color: var(--bg-code);
+      color: #38bdf8;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    pre {
+      background-color: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    pre code {
+      padding: 0;
+      background: none;
+      color: #e2e8f0;
+    }
+
+    .footer-nav {
+      margin-top: 3.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+      .hero {
+        padding: 1.5rem 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="top-nav">
+      <div class="brand">
+        <span>stylometric-de-ai-rewriter</span>
+        <span class="badge">v1.0 Universal</span>
+      </div>
+      <nav class="nav-group">
+        <a href="examples.html" class="nav-btn-secondary">13-Language Examples</a>
+        <a href="rules.html" class="nav-btn">6 Core Rules →</a>
+      </nav>
+    </header>
+
+    <div class="hero">
+      <h1>Stylometric De-AI &amp; Anti-Provenance Rewriter</h1>
+      <p>
+        A self-contained, zero-dependency LLM skill that sanitizes technical AI provenance marks (invisible Unicode, exotic spaces, citation/UTM artifacts, and C2PA/EXIF/XMP/OOXML metadata in <strong>Layer A</strong>) and rewrites robotic AI prose into natural human writing across all languages and genres using a 6-pass stylometric protocol (<strong>Layer B</strong>).
+      </p>
+    </div>
+
+    <section>
+      <h2>1. Core Safeguards</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. Source Fidelity First</h3>
+          <p>Never invents facts, numbers, dates, named sources, citations, or physical details absent from the source text (fiction is exempt).</p>
+          <ul>
+            <li>Preserves genuine epistemic hedges (<em>may, might, suggests, is associated with, ehtimal olunur, может</em>) when backed by empirical or clinical uncertainty.</li>
+            <li>Strips only performative throat-clearing (<em>"it is worth noting that"</em>).</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>2. Genre &amp; Register Gate</h3>
+          <p>Classifies the input before editing so essay rules are never forced onto non-essay formats:</p>
+          <ul>
+            <li><strong>Emails &amp; replies:</strong> Keeps greetings, sign-offs, and actionable task/schedule bullets; leads directly with the decision or question (<code>#26</code>).</li>
+            <li><strong>Academic abstracts:</strong> Preserves objective, method, results, conclusion, and confidence bounds.</li>
+            <li><strong>Technical docs &amp; legal text:</strong> Keeps numbered steps, lists, tables, code blocks, paths, and exact defined terms.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>3. Morphosyntactic Scaling</h3>
+          <p>Adapts sentence-length variation to the morphological typology of the target language:</p>
+          <ul>
+            <li><strong>Analytic (EN, ES, FR, PT):</strong> Alternates <code>3–7</code> word and <code>35–55</code> word sentences (<code>CV &gt;= 0.50</code>).</li>
+            <li><strong>Agglutinative &amp; Inflected (AZ, TR, FI, HU, RU, DE, AR):</strong> Alternates <code>3–5</code> word finite clauses with <code>22–35</code> word multi-clause sentences (<code>CV &gt;= 0.45</code>), respecting native SOV/constituent scrambling.</li>
+            <li><strong>Isolating &amp; Logographic (CJK, TH, KM):</strong> Varies clause character counts sharply across punctuation boundaries.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>2. Tier 1: Layer A — Multi-Vendor Technical Provenance Hygiene</h2>
+      <p>
+        During token regeneration, the skill emits clean canonical characters and strips mechanical provenance markers across OpenAI/ChatGPT, Anthropic/Claude, Google/Gemini, DeepSeek, Qwen, Perplexity, Meta/Llama, Mistral, Cohere, Grok, and Copilot:
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Target Codepoints &amp; Artifacts</th>
+              <th>Sanitization Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Unconditional Invisible Strip</strong></td>
+              <td><code>\u200B</code> (ZWSP), <code>\u2060</code>, <code>\u00AD</code>, <code>\uFEFF</code> (BOM), <code>\u034F</code>, <code>\u061C</code>, Mongolian selectors (<code>\u180B–\u180E</code>), Bidi overrides/isolates (<code>\u200E–\u200F</code>, <code>\u202A–\u202E</code>, <code>\u2066–\u2069</code>), invisible math (<code>\u2061–\u2064</code>), Plane 14 Tags (<code>\uE0000–\uE007F</code>), stego selectors (<code>\uE0100–\uE01EF</code>)</td>
+              <td>Omitted completely during token regeneration.</td>
+            </tr>
+            <tr>
+              <td><strong>Conditional Joiner Preservation</strong></td>
+              <td><code>\u200D</code> (ZWJ) and <code>\u200C</code> (ZWNJ)</td>
+              <td>Preserved in multi-codepoint emoji sequences and orthographically required scripts (Arabic, Persian, Indic, Southeast Asian); stripped when wedged between Latin, Cyrillic, or Greek letters.</td>
+            </tr>
+            <tr>
+              <td><strong>Exotic Whitespace &amp; CJK Punctuation Leakage</strong></td>
+              <td>Narrow no-break space (<code>\u202F</code>), <code>\u00A0</code>, <code>\u3000</code>, quad/thin/hair spaces (<code>\u2000–\u200A</code>, <code>\u205F</code>); leaked fullwidth punctuation (<code>，</code>, <code>：</code>, <code>；</code>, <code>（</code>, <code>）</code>)</td>
+              <td>Normalized to standard ASCII space (<code>0x20</code>) and standard ASCII punctuation inside non-CJK sentences.</td>
+            </tr>
+            <tr>
+              <td><strong>Multi-Vendor UI &amp; Citation Artifacts</strong></td>
+              <td><code>【4:0†source】</code>, <code>:contentReference[oaicite:0]{index=0}</code>, unanchored footnote brackets, <code>?utm_source=chatgpt.com|claude|gemini|perplexity|copilot</code></td>
+              <td>Stripped cleanly while preserving valid destination URLs.</td>
+            </tr>
+            <tr>
+              <td><strong>Canonical NFC &amp; Mixed-Script Homoglyph Flagging</strong></td>
+              <td>Single word tokens mixing Latin, Cyrillic, and Greek characters (e.g., Cyrillic <code>о</code> inside a Latin word)</td>
+              <td>Normalized to canonical <code>NFC</code>; mixed-script tokens are flagged in the audit table and corrected to pure-script words in the rewrite.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top: 1.75rem;">Local Container &amp; File Metadata Sanitization Commands</h3>
+      <pre><code># PDF (.pdf) — Strip /Info dictionaries, XMP streams, and pdfProducer tags:
+exiftool -all:all= input.pdf -o temp.pdf &amp;&amp; qpdf --linearize temp.pdf cleaned.pdf
+
+# Office OpenXML &amp; ODF (.docx, .pptx, .xlsx, .odt) — Clear docProps/core.xml &amp; app.xml or run:
+exiftool -all= document.docx
+
+# Images &amp; Media (.png, .jpg, .webp, .avif, .mp4) — Strip C2PA JUMBF, EXIF, XMP &amp; PNG chunks:
+exiftool -all= image.png</code></pre>
+    </section>
+
+    <section>
+      <h2>3. Tier 2: Layer B — 6-Pass Stylometric Editing Pipeline</h2>
+      <p>
+        After Layer A hygiene, the draft undergoes a top-down (macro-to-micro) 6-pass transformation addressing all 38 universal LLM signatures. Visit the <a href="rules.html" style="color: var(--accent);">6 Core Rules</a> page for architectural details or explore the <a href="examples.html" style="color: var(--info);">13-Language Showcase</a> for live transformations.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Pass</th>
+              <th>Pipeline Stage</th>
+              <th>Signatures Addressed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Pass 1</strong></td>
+              <td>Macro-Discourse and Epistemic Alignment</td>
+              <td><code>#4, #21, #22, #25, #27, #28, #29, #30, #31, #32</code></td>
+            </tr>
+            <tr>
+              <td><strong>Pass 2</strong></td>
+              <td>Typographic and Visual Scaffolding</td>
+              <td><code>#33, #34, #35, #36, #37, #38</code></td>
+            </tr>
+            <tr>
+              <td><strong>Pass 3</strong></td>
+              <td>Rhetorical Templates and Transitions</td>
+              <td><code>#11, #20, #23, #24, #26</code></td>
+            </tr>
+            <tr>
+              <td><strong>Pass 4</strong></td>
+              <td>Syntactic Tree Variance and Burstiness</td>
+              <td><code>#2, #3, #7, #8, #9, #10, #12</code></td>
+            </tr>
+            <tr>
+              <td><strong>Pass 5</strong></td>
+              <td>Lexical Precision and Collocation De-Smoothing</td>
+              <td><code>#1, #5, #6, #13, #14, #15, #16, #17, #18, #19</code></td>
+            </tr>
+            <tr>
+              <td><strong>Pass 6</strong></td>
+              <td>Self-Audit Verification Gate</td>
+              <td>Sentence length range, dash quota, punctuation variety, structural tell audit</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. Output Modes</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Default Mode</h3>
+          <p>
+            Outputs the final sanitized and rewritten text first, followed by a compact <strong>Anti-Provenance &amp; Stylometric Audit</strong> table summarizing Layer A artifacts stripped and Pass 6 structural verification metrics (shortest/longest sentence word counts, dash count, and key signatures removed).
+          </p>
+        </div>
+        <div class="card">
+          <h3>Clean / Text-Only Mode</h3>
+          <p>
+            When the user asks for <em>"only the text"</em> or invokes the skill inside an automated pipeline, it outputs strictly the final rewritten text with no commentary or tables.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-nav">
+      <span style="color: var(--text-muted); font-size: 0.9rem;">
+        MIT License &bull; Open-Source LLM Skill Documentation
+      </span>
+      <div class="nav-group">
+        <a href="examples.html" class="nav-btn-secondary">13-Language Examples</a>
+        <a href="rules.html" class="nav-btn">6 Core Rules →</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
